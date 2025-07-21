@@ -12,7 +12,11 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['blog-using-django.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = [
+    'blog-website-k7nd.onrender.com',  # Your new Render domain
+    'localhost',
+    '127.0.0.1'
+]
 
 LOGIN_URL = '/blog/login'
 
