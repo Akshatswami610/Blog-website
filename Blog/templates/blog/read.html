@@ -1,0 +1,583 @@
+{% extends 'blog/basic.html' %}
+{% block title %}{{ post.post_title }} - My Awesome Blog{% endblock %}
+
+{% block css %}
+<style>
+  /* Read Page Specific Styles */
+  .read-container {
+    max-width: 900px;
+    margin: 3rem auto 2rem auto;
+    padding: 0 1rem;
+    position: relative;
+  }
+
+  /* Floating Share Button */
+  .share-float {
+    position: fixed;
+    top: 120px;
+    right: 2rem;
+    z-index: 1000;
+  }
+
+  .share-toggle {
+    width: 50px;
+    height: 50px;
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    box-shadow: var(--bs-shadow-lg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .share-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: var(--bs-shadow-xl);
+  }
+
+  .share-menu {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: var(--bs-card-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: var(--bs-shadow-xl);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    min-width: 200px;
+  }
+
+  .share-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .share-menu h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--bs-body-color);
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .share-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .share-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+  }
+
+  .share-btn:hover {
+    transform: translateX(5px);
+  }
+
+  .share-btn.twitter {
+    background: rgba(29, 161, 242, 0.1);
+    color: #1da1f2;
+  }
+
+  .share-btn.twitter:hover {
+    background: rgba(29, 161, 242, 0.2);
+    color: #1da1f2;
+  }
+
+  .share-btn.facebook {
+    background: rgba(66, 103, 178, 0.1);
+    color: #4267b2;
+  }
+
+  .share-btn.facebook:hover {
+    background: rgba(66, 103, 178, 0.2);
+    color: #4267b2;
+  }
+
+  .share-btn.linkedin {
+    background: rgba(0, 119, 181, 0.1);
+    color: #0077b5;
+  }
+
+  .share-btn.linkedin:hover {
+    background: rgba(0, 119, 181, 0.2);
+    color: #0077b5;
+  }
+
+  .share-btn.copy {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+  }
+
+  .share-btn.copy:hover {
+    background: rgba(102, 126, 234, 0.2);
+    color: #667eea;
+  }
+
+  /* Floating Add Button */
+  .add-post-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 60px;
+    height: 60px;
+    background: var(--secondary-gradient);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 1.5rem;
+    box-shadow: var(--bs-shadow-lg);
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+
+  .add-post-btn:hover {
+    transform: scale(1.1);
+    color: white;
+    box-shadow: var(--bs-shadow-xl);
+  }
+
+  .post-header {
+    text-align: center;
+    margin: 3rem 0 3rem 0;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--bs-border-color);
+  }
+
+  .post-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--bs-body-color);
+    margin: 2rem 0 1.5rem 0;
+    font-family: 'Playfair Display', serif;
+    line-height: 1.2;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .post-meta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    font-size: 1rem;
+    color: #64748b;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .meta-item i {
+    font-size: 1.1rem;
+  }
+
+  .category-tag {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    padding: 0.5rem 1rem;
+    border-radius: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .post-image {
+    width: 100%;
+    max-width: 600px;
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: 1rem;
+    box-shadow: var(--bs-shadow-lg);
+    margin: 0 auto 3rem auto;
+    display: block;
+  }
+
+  .post-content {
+    background: var(--bs-card-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 1.5rem;
+    padding: 3rem;
+    box-shadow: var(--bs-shadow-md);
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .post-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-gradient);
+  }
+
+  .post-content p {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--bs-body-color);
+    margin-bottom: 1.5rem;
+  }
+
+  .post-content h1,
+  .post-content h2,
+  .post-content h3,
+  .post-content h4,
+  .post-content h5,
+  .post-content h6 {
+    color: var(--bs-body-color);
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    margin: 2rem 0 1rem 0;
+  }
+
+  .post-content h2 {
+    font-size: 2rem;
+  }
+
+  .post-content h3 {
+    font-size: 1.5rem;
+  }
+
+  .post-content blockquote {
+    border-left: 4px solid #667eea;
+    padding-left: 2rem;
+    margin: 2rem 0;
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--bs-body-color);
+    opacity: 0.9;
+  }
+
+  .post-content ul,
+  .post-content ol {
+    padding-left: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .post-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+
+  /* Navigation Buttons */
+  .post-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .nav-btn {
+    background: var(--primary-gradient);
+    color: white;
+    text-decoration: none;
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: var(--bs-shadow-md);
+  }
+
+  .nav-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--bs-shadow-lg);
+    color: white;
+  }
+
+  .nav-btn.secondary {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+  }
+
+  .nav-btn.secondary:hover {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.4);
+    color: #667eea;
+  }
+
+  /* Animation Classes */
+  .fade-in-up {
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .read-container {
+      padding: 0 0.5rem;
+    }
+
+    .share-float {
+      top: 100px;
+      right: 1rem;
+    }
+
+    .share-toggle {
+      width: 45px;
+      height: 45px;
+      font-size: 1.1rem;
+    }
+
+    .share-menu {
+      right: -50px;
+      min-width: 180px;
+    }
+
+    .post-title {
+      font-size: 2.5rem;
+    }
+
+    .post-meta {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .post-content {
+      padding: 2rem;
+    }
+
+    .post-content p {
+      font-size: 1rem;
+    }
+
+    .post-navigation {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .nav-btn {
+      justify-content: center;
+    }
+
+    .add-post-btn {
+      width: 50px;
+      height: 50px;
+      font-size: 1.25rem;
+      bottom: 1.5rem;
+      right: 1.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .post-title {
+      font-size: 2rem;
+    }
+
+    .post-content {
+      padding: 1.5rem;
+    }
+
+    .share-menu {
+      min-width: 160px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="read-container">
+  <!-- Floating Share Button -->
+  <div class="share-float">
+    <button class="share-toggle" onclick="toggleShareMenu()">
+      <i class="bi bi-share"></i>
+    </button>
+    <div class="share-menu" id="shareMenu">
+      <h4>Share This Post</h4>
+      <div class="share-buttons">
+        <a href="https://twitter.com/intent/tweet?text={{ post.post_title|urlencode }}&url={{ request.build_absolute_uri }}"
+           target="_blank" class="share-btn twitter">
+          <i class="bi bi-twitter"></i>
+          Twitter
+        </a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
+           target="_blank" class="share-btn facebook">
+          <i class="bi bi-facebook"></i>
+          Facebook
+        </a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}"
+           target="_blank" class="share-btn linkedin">
+          <i class="bi bi-linkedin"></i>
+          LinkedIn
+        </a>
+        <button onclick="copyToClipboard()" class="share-btn copy">
+          <i class="bi bi-link-45deg"></i>
+          Copy Link
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post Header -->
+  <header class="post-header fade-in-up">
+    <h1 class="post-title">{{ post.post_title }}</h1>
+    <div class="post-meta">
+      <div class="meta-item">
+        <i class="bi bi-calendar3"></i>
+        {{ post.timestamp|date:"F d, Y" }}
+      </div>
+      {% if post.author %}
+        <div class="meta-item">
+          <i class="bi bi-person-circle"></i>
+          {{ post.author }}
+        </div>
+      {% endif %}
+      {% if post.category %}
+        <div class="category-tag">
+          <i class="bi bi-tag"></i>
+          {{ post.category }}
+        </div>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Featured Image -->
+  {% if post.image %}
+    <div class="fade-in-up">
+      <img src="{{ post.image.url }}" alt="{{ post.post_title }}" class="post-image">
+    </div>
+  {% endif %}
+
+  <!-- Post Content -->
+  <article class="post-content fade-in-up">
+    {{ post.content|linebreaks }}
+  </article>
+
+  <!-- Navigation -->
+  <nav class="post-navigation fade-in-up">
+    <a href="{% url 'blogHome' %}" class="nav-btn secondary">
+      <i class="bi bi-arrow-left"></i>
+      Back to Blog
+    </a>
+  </nav>
+</div>
+
+<!-- Floating Add Button -->
+<a href="{% url 'addPost' %}" class="add-post-btn" title="Write New Post">
+  <i class="bi bi-plus-lg"></i>
+</a>
+
+<script>
+  // Share menu toggle
+  function toggleShareMenu() {
+    const menu = document.getElementById('shareMenu');
+    menu.classList.toggle('active');
+  }
+
+  // Close share menu when clicking outside
+  document.addEventListener('click', function(event) {
+    const shareFloat = document.querySelector('.share-float');
+    const menu = document.getElementById('shareMenu');
+
+    if (!shareFloat.contains(event.target)) {
+      menu.classList.remove('active');
+    }
+  });
+
+  // Copy to clipboard function
+  function copyToClipboard() {
+    navigator.clipboard.writeText(window.location.href).then(function() {
+      // Show success message
+      const btn = document.querySelector('.share-btn.copy');
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = '<i class="bi bi-check"></i> Copied!';
+      btn.style.background = 'rgba(67, 233, 123, 0.2)';
+      btn.style.color = '#43e97b';
+
+      setTimeout(() => {
+        btn.innerHTML = originalHTML;
+        btn.style.background = '';
+        btn.style.color = '';
+      }, 2000);
+    });
+  }
+
+  // Add scroll-triggered animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, observerOptions);
+
+  // Observe all animated elements
+  document.querySelectorAll('.fade-in-up').forEach(element => {
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(30px)';
+    element.style.transition = 'all 0.8s ease-out';
+    observer.observe(element);
+  });
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+</script>
+{% endblock %}

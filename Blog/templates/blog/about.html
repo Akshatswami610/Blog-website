@@ -1,0 +1,876 @@
+{% extends 'blog/basic.html' %}
+{% block title %}About Us{% endblock %}
+
+{% block css %}
+<style>
+/* About Page Specific Styles */
+.about-container {
+  max-width: 1400px;
+  margin: 3rem auto 2rem auto;
+  padding: 0 3rem;
+}
+
+.about-hero {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-radius: 2rem;
+  padding: 4rem 4rem;
+  text-align: center;
+  margin-bottom: 4rem;
+  border: 1px solid var(--bs-border-color);
+  box-shadow: var(--bs-shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: var(--primary-gradient);
+}
+
+.about-hero h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: 'Playfair Display', serif;
+  line-height: 1.2;
+}
+
+.about-hero .subtitle {
+  font-size: 1.25rem;
+  color: var(--bs-body-color);
+  opacity: 0.8;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+  padding: 0 2rem;
+}
+
+/* Mission Section */
+.mission-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.mission-content {
+  padding: 2rem 0;
+  padding-right: 1rem;
+}
+
+.mission-content h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--bs-body-color);
+  margin-bottom: 1.5rem;
+  font-family: 'Playfair Display', serif;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mission-content h2 i {
+  font-size: 2rem;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.mission-content p {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: var(--bs-body-color);
+  opacity: 0.9;
+  margin-bottom: 1.5rem;
+}
+
+.mission-visual {
+  background: var(--bs-card-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 1.5rem;
+  padding: 3rem 2.5rem;
+  box-shadow: var(--bs-shadow-md);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-left: 1rem;
+}
+
+.mission-visual::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-gradient);
+}
+
+.mission-icon {
+  width: 120px;
+  height: 120px;
+  background: var(--primary-gradient);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem;
+  font-size: 3rem;
+  color: white;
+  box-shadow: var(--bs-shadow-lg);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.mission-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1.25rem 1rem;
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 1rem;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #667eea;
+  display: block;
+  font-family: 'Playfair Display', serif;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--bs-body-color);
+  opacity: 0.8;
+  margin-top: 0.5rem;
+}
+
+/* Values Section */
+.values-section {
+  text-align: center;
+  margin: 4rem 0;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 2rem;
+}
+
+.values-section h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--bs-body-color);
+  margin-bottom: 1rem;
+  font-family: 'Playfair Display', serif;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.values-subtitle {
+  font-size: 1.125rem;
+  color: var(--bs-body-color);
+  opacity: 0.8;
+  margin-bottom: 3rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.value-item {
+  background: var(--bs-card-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  box-shadow: var(--bs-shadow-sm);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.value-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-gradient);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.value-item:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--bs-shadow-lg);
+}
+
+.value-item:hover::before {
+  transform: scaleX(1);
+}
+
+.value-icon {
+  width: 80px;
+  height: 80px;
+  background: var(--primary-gradient);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2rem;
+  color: white;
+  box-shadow: var(--bs-shadow-md);
+  transition: all 0.3s ease;
+}
+
+.value-item:hover .value-icon {
+  transform: scale(1.1);
+}
+
+.value-item h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--bs-body-color);
+  margin-bottom: 1rem;
+  font-family: 'Playfair Display', serif;
+}
+
+.value-item p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--bs-body-color);
+  opacity: 0.8;
+  margin: 0;
+}
+
+/* Story Section */
+.story-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.story-visual {
+  background: var(--bs-card-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 1.5rem;
+  padding: 3rem 2.5rem;
+  box-shadow: var(--bs-shadow-md);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-right: 1rem;
+}
+
+.story-visual::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--secondary-gradient);
+}
+
+.story-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: rgba(118, 75, 162, 0.05);
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+}
+
+.timeline-item:hover {
+  background: rgba(118, 75, 162, 0.1);
+  transform: translateX(10px);
+}
+
+.timeline-icon {
+  width: 50px;
+  height: 50px;
+  background: var(--secondary-gradient);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.timeline-content h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--bs-body-color);
+  margin: 0 0 0.5rem 0;
+}
+
+.timeline-content p {
+  font-size: 0.95rem;
+  color: var(--bs-body-color);
+  opacity: 0.8;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.story-content {
+  padding: 2rem 0;
+  padding-left: 1rem;
+}
+
+.story-content h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--bs-body-color);
+  margin-bottom: 1.5rem;
+  font-family: 'Playfair Display', serif;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.story-content h2 i {
+  font-size: 2rem;
+  background: var(--secondary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.story-content p {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: var(--bs-body-color);
+  opacity: 0.9;
+  margin-bottom: 1.5rem;
+}
+
+/* Call to Action */
+.cta-section {
+  background: var(--primary-gradient);
+  color: white;
+  border-radius: 2rem;
+  padding: 4rem 4rem;
+  text-align: center;
+  margin-top: 4rem;
+  box-shadow: var(--bs-shadow-xl);
+  position: relative;
+  overflow: hidden;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cta-section h2 {
+  font-size: 2.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  font-family: 'Playfair Display', serif;
+  position: relative;
+  z-index: 2;
+}
+
+.cta-section p {
+  font-size: 1.25rem;
+  margin-bottom: 2.5rem;
+  opacity: 0.9;
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
+}
+
+.btn-cta {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 1.25rem 2.5rem;
+  border-radius: 2rem;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.125rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 180px;
+  justify-content: center;
+}
+
+.btn-cta:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-3px);
+  color: white;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.btn-cta-primary {
+  background: white;
+  color: #667eea;
+  border-color: white;
+}
+
+.btn-cta-primary:hover {
+  background: rgba(255, 255, 255, 0.9);
+  color: #667eea;
+  transform: translateY(-3px);
+}
+
+.cta-quote {
+  margin-top: 2.5rem;
+  font-style: italic;
+  font-size: 1.125rem;
+  opacity: 0.9;
+  position: relative;
+  z-index: 2;
+}
+
+/* Animation Classes */
+.fade-in-up {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .about-container {
+    max-width: 1200px;
+    padding: 0 2rem;
+  }
+
+  .about-content {
+    padding: 0 1rem;
+  }
+
+  .mission-section,
+  .story-section {
+    gap: 3rem;
+  }
+
+  .values-section {
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .about-container {
+    padding: 0 1.5rem;
+  }
+
+  .about-content {
+    padding: 0;
+  }
+
+  .mission-section,
+  .story-section {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .mission-content,
+  .story-content {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .mission-visual,
+  .story-visual {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .values-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: 500px;
+  }
+
+  .value-item {
+    height: auto;
+    padding: 2rem;
+  }
+
+  .mission-stats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .values-section {
+    padding: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-container {
+    padding: 0 1rem;
+  }
+
+  .about-hero {
+    padding: 3rem 2.5rem;
+  }
+
+  .about-hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .mission-content h2,
+  .story-content h2,
+  .values-section h2 {
+    font-size: 2rem;
+  }
+
+  .mission-visual,
+  .story-visual {
+    padding: 2rem;
+  }
+
+  .mission-icon {
+    width: 100px;
+    height: 100px;
+    font-size: 2.5rem;
+  }
+
+  .cta-section {
+    padding: 3rem 2.5rem;
+  }
+
+  .cta-section h2 {
+    font-size: 2.25rem;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .btn-cta {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-container {
+    padding: 0 0.75rem;
+  }
+
+  .about-hero {
+    padding: 2rem 1.5rem;
+  }
+
+  .about-hero h1 {
+    font-size: 2rem;
+  }
+
+  .mission-visual,
+  .story-visual {
+    padding: 1.5rem;
+  }
+
+  .mission-icon {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+
+  .value-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+
+  .timeline-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .cta-section {
+    padding: 2.5rem 1.5rem;
+  }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="about-container">
+  <!-- Hero Section -->
+  <section class="about-hero fade-in-up">
+    <h1>About My Awesome Blog</h1>
+    <p class="subtitle">
+      Your go-to place for inspiration, ideas, and real talk.
+      Where authentic voices meet creative minds.
+    </p>
+  </section>
+
+  <!-- Main Content -->
+  <div class="about-content">
+    <!-- Mission Section -->
+    <section class="mission-section fade-in-up">
+      <div class="mission-content">
+        <h2>
+          <i class="bi bi-rocket-takeoff"></i>
+          Our Mission
+        </h2>
+        <p>
+          This blog was created with one simple goal in mind: to share awesome content that informs, inspires, and entertains. Whether you're here for tips, personal stories, thought-provoking opinions, or just a little distraction from the everyday hustle, you'll find something worth reading.
+        </p>
+        <p>
+          We believe that every story matters, every perspective adds value, and every reader brings something unique to our community. This isn't just a blog—it's a space where ideas flourish and connections are made.
+        </p>
+      </div>
+
+      <div class="mission-visual">
+        <div class="mission-icon">
+          <i class="bi bi-lightbulb"></i>
+        </div>
+        <div class="mission-stats">
+          <div class="stat-item">
+            <span class="stat-number">500+</span>
+            <span class="stat-label">Posts Published</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">10K+</span>
+            <span class="stat-label">Happy Readers</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">50+</span>
+            <span class="stat-label">Topics Covered</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values-section fade-in-up">
+      <h2>What We Stand For</h2>
+      <p class="values-subtitle">
+        Our core values guide everything we do, from the content we create to the community we build.
+      </p>
+      <div class="values-grid">
+        <div class="value-item">
+          <div class="value-icon">
+            <i class="bi bi-shield-check"></i>
+          </div>
+          <h3>Authenticity</h3>
+          <p>Honest voices and real-life experiences that resonate with genuine human connection.</p>
+        </div>
+
+        <div class="value-item">
+          <div class="value-icon">
+            <i class="bi bi-lightbulb"></i>
+          </div>
+          <h3>Creativity</h3>
+          <p>Fresh ideas, unique angles, and open minds that challenge conventional thinking.</p>
+        </div>
+
+        <div class="value-item">
+          <div class="value-icon">
+            <i class="bi bi-people"></i>
+          </div>
+          <h3>Community</h3>
+          <p>Connecting with readers who are just as curious and passionate as we are.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Story Section -->
+    <section class="story-section fade-in-up">
+      <div class="story-visual">
+        <div class="story-timeline">
+          <div class="timeline-item">
+            <div class="timeline-icon">
+              <i class="bi bi-lightbulb"></i>
+            </div>
+            <div class="timeline-content">
+              <h4>The Idea</h4>
+              <p>Started with a simple desire to share thoughts and connect with like-minded people.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-icon">
+              <i class="bi bi-pencil"></i>
+            </div>
+            <div class="timeline-content">
+              <h4>First Post</h4>
+              <p>Published our first article and discovered the joy of authentic storytelling.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-icon">
+              <i class="bi bi-people"></i>
+            </div>
+            <div class="timeline-content">
+              <h4>Growing Community</h4>
+              <p>Readers started engaging, sharing, and becoming part of our growing family.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-icon">
+              <i class="bi bi-star"></i>
+            </div>
+            <div class="timeline-content">
+              <h4>Today</h4>
+              <p>A thriving platform where stories inspire, educate, and bring people together.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-content">
+        <h2>
+          <i class="bi bi-book"></i>
+          Our Story
+        </h2>
+        <p>
+          What started as a simple idea to share thoughts and experiences has grown into a vibrant community of readers and writers. Every post is crafted with care, every story is told with purpose, and every interaction is valued.
+        </p>
+        <p>
+          We're not just content creators—we're storytellers, dreamers, and believers in the power of words to change perspectives and inspire action. Join us on this journey of discovery, learning, and growth.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <!-- Call to Action -->
+  <section class="cta-section fade-in-up">
+    <h2>Ready to Join Our Community?</h2>
+    <p>
+      Thanks for stopping by! Dive into the posts, leave a comment, and make yourself at home.
+      This space is as much yours as it is ours.
+    </p>
+    <div class="cta-buttons">
+      <a href="/blog" class="btn-cta btn-cta-primary">
+        <i class="bi bi-journal-text"></i>
+        Explore Posts
+      </a>
+      <a href="/blog/contact" class="btn-cta">
+        <i class="bi bi-chat-dots"></i>
+        Get in Touch
+      </a>
+    </div>
+    <p class="cta-quote">
+      "Let's make it awesome—together."
+    </p>
+  </section>
+</div>
+
+<script>
+  // Add scroll-triggered animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, observerOptions);
+
+  // Observe all animated elements
+  document.querySelectorAll('.fade-in-up').forEach(element => {
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(30px)';
+    element.style.transition = 'all 0.8s ease-out';
+    observer.observe(element);
+  });
+
+  // Add stagger effect to value items
+  document.querySelectorAll('.value-item').forEach((item, index) => {
+    item.style.animationDelay = `${index * 0.2}s`;
+  });
+</script>
+{% endblock %}

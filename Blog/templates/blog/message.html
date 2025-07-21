@@ -1,0 +1,205 @@
+{% extends 'blog/basic.html' %}
+{% block title %}Blog Submission Success{% endblock %}
+
+{% block css %}
+<style>
+  /* Success Page Specific Styles */
+  .success-container {
+    max-width: 600px;
+    margin: 4rem auto;
+    padding: 0 1rem;
+    min-height: calc(100vh - 300px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .success-card {
+    background: var(--bs-card-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 1.5rem;
+    padding: 3rem 2rem;
+    box-shadow: var(--bs-shadow-lg);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .success-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--success-gradient);
+  }
+
+  /* Success Icon */
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--success-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+    font-size: 2.5rem;
+    color: white;
+    box-shadow: var(--bs-shadow-md);
+  }
+
+  .success-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--bs-body-color);
+    font-family: 'Playfair Display', serif;
+  }
+
+  .success-message {
+    font-size: 1.125rem;
+    color: var(--bs-body-color);
+    opacity: 0.8;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+  }
+
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-action {
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: var(--bs-shadow-sm);
+    min-width: 160px;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--bs-shadow-md);
+    color: white;
+  }
+
+  .btn-secondary {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+  }
+
+  .btn-secondary:hover {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+    color: #667eea;
+    box-shadow: var(--bs-shadow-sm);
+  }
+
+  /* Animation */
+  .fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .success-container {
+      margin: 2rem auto;
+    }
+
+    .success-card {
+      padding: 2rem 1.5rem;
+    }
+
+    .success-title {
+      font-size: 1.75rem;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .btn-action {
+      width: 100%;
+      max-width: 280px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .success-card {
+      padding: 2rem 1rem;
+    }
+
+    .success-title {
+      font-size: 1.5rem;
+    }
+
+    .success-icon {
+      width: 70px;
+      height: 70px;
+      font-size: 2rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="success-container">
+  <div class="success-card fade-in">
+    <!-- Success Icon -->
+    <div class="success-icon">
+      <i class="bi bi-check-circle-fill"></i>
+    </div>
+
+    <!-- Success Message -->
+    <h1 class="success-title">Post Published Successfully!</h1>
+    <p class="success-message">
+      Your blog post has been published and is now live for everyone to read.
+    </p>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <a href="{% url 'blogHome' %}" class="btn-action btn-primary">
+        <i class="bi bi-house-fill"></i>
+        Back to Home
+      </a>
+      <a href="{% url 'addPost' %}" class="btn-action btn-secondary">
+        <i class="bi bi-plus-circle"></i>
+        Write Another Post
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

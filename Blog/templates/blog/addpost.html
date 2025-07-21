@@ -1,0 +1,879 @@
+{% extends 'blog/basic.html' %}
+{% block title %}Add Blog Post{% endblock %}
+
+{% block css %}
+<style>
+  /* Add Post Page Specific Styles */
+  .addpost-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 3rem;
+  }
+
+  .addpost-hero {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: 2rem;
+    padding: 4rem 4rem;
+    text-align: center;
+    margin-bottom: 4rem;
+    border: 1px solid var(--bs-border-color);
+    box-shadow: var(--bs-shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .addpost-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: var(--primary-gradient);
+  }
+
+  .addpost-hero h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: 'Playfair Display', serif;
+    line-height: 1.2;
+  }
+
+  .addpost-hero .subtitle {
+    font-size: 1.25rem;
+    color: var(--bs-body-color);
+    opacity: 0.8;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .form-card {
+    background: var(--bs-card-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 1.5rem;
+    padding: 4rem 3.5rem;
+    box-shadow: var(--bs-shadow-md);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .form-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-gradient);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  .form-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--bs-shadow-xl);
+  }
+
+  .form-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .form-group {
+    margin-bottom: 2.5rem;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: var(--bs-body-color);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  .form-label i {
+    font-size: 1rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 1.25rem 1.5rem;
+    border: 2px solid var(--bs-border-color);
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    background: var(--bs-card-bg);
+    color: var(--bs-body-color);
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .form-control::placeholder {
+    color: #94a3b8;
+    opacity: 1;
+  }
+
+  textarea.form-control {
+    resize: vertical;
+    min-height: 220px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* File Upload Styling */
+  .file-upload-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+
+  .file-upload-input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .file-upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    padding: 2.5rem;
+    border: 2px dashed var(--bs-border-color);
+    border-radius: 0.75rem;
+    background: rgba(102, 126, 234, 0.05);
+    color: var(--bs-body-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+
+  .file-upload-label:hover {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .file-upload-label i {
+    font-size: 2rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .file-upload-text {
+    font-weight: 500;
+    font-size: 1.125rem;
+  }
+
+  .file-upload-note {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-top: 0.5rem;
+  }
+
+  /* Image Preview */
+  .image-preview {
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+
+  .preview-image {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 0.75rem;
+    box-shadow: var(--bs-shadow-md);
+  }
+
+  /* Button Group */
+  .button-group {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: space-between;
+    margin-top: 4rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-back {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    padding: 1.25rem 2.5rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+    min-width: 180px;
+    justify-content: center;
+  }
+
+  .btn-back:hover {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+    color: #667eea;
+    box-shadow: var(--bs-shadow-md);
+  }
+
+  .btn-submit {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    padding: 1.25rem 2.5rem;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: var(--bs-shadow-md);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    min-width: 180px;
+    justify-content: center;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--bs-shadow-lg);
+    color: white;
+  }
+
+  .btn-submit:active {
+    transform: translateY(0);
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Character Counter */
+  .char-counter {
+    text-align: right;
+    font-size: 0.9rem;
+    color: var(--bs-body-color);
+    opacity: 0.7;
+    margin-top: 0.75rem;
+  }
+
+  /* Form Tips */
+  .form-tips {
+    background: rgba(67, 233, 123, 0.1);
+    border: 1px solid rgba(67, 233, 123, 0.2);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .form-tips h3 {
+    color: var(--bs-body-color);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .form-tips ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .form-tips li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    color: var(--bs-body-color);
+    opacity: 0.9;
+    font-size: 1rem;
+  }
+
+  .form-tips li i {
+    color: #43e97b;
+    font-size: 0.9rem;
+  }
+
+  /* Animation Classes */
+  .fade-in-up {
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1200px) {
+    .addpost-container {
+      max-width: 1200px;
+      padding: 0 2rem;
+    }
+
+    .form-card {
+      padding: 3rem 2.5rem;
+    }
+  }
+
+  @media (max-width: 992px) {
+    .addpost-container {
+      padding: 0 1.5rem;
+    }
+
+    .addpost-hero {
+      padding: 3rem 2.5rem;
+    }
+
+    .addpost-hero h1 {
+      font-size: 2.5rem;
+    }
+
+    .form-card {
+      padding: 2.5rem 2rem;
+    }
+
+    .button-group {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .btn-back,
+    .btn-submit {
+      width: 100%;
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .addpost-container {
+      padding: 0 1rem;
+    }
+
+    .addpost-hero {
+      padding: 2.5rem 2rem;
+    }
+
+    .addpost-hero h1 {
+      font-size: 2.25rem;
+    }
+
+    .form-card {
+      padding: 2rem 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 2rem;
+    }
+
+    .form-control {
+      padding: 1rem 1.25rem;
+    }
+
+    .file-upload-label {
+      padding: 2rem;
+    }
+
+    .form-tips {
+      padding: 1.5rem;
+    }
+
+    .button-group {
+      margin-top: 3rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .addpost-container {
+      padding: 0 0.75rem;
+    }
+
+    .addpost-hero {
+      padding: 2rem 1.5rem;
+    }
+
+    .addpost-hero h1 {
+      font-size: 2rem;
+    }
+
+    .form-card {
+      padding: 1.5rem 1.25rem;
+    }
+
+    .form-control {
+      padding: 0.875rem 1rem;
+    }
+
+    .file-upload-label {
+      padding: 1.5rem;
+    }
+
+    .btn-back,
+    .btn-submit {
+      padding: 1rem 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .form-tips {
+      padding: 1.25rem;
+    }
+
+    .form-tips li {
+      font-size: 0.95rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="addpost-container">
+  <!-- Hero Section -->
+  <section class="addpost-hero fade-in-up">
+    <h1>Create New Post</h1>
+    <p class="subtitle">
+      Share your thoughts, ideas, and stories with the world.
+      Let your creativity shine through your words.
+    </p>
+  </section>
+
+  <!-- Form Card -->
+  <div class="form-card fade-in-up">
+    <!-- Writing Tips -->
+    <div class="form-tips">
+      <h3>
+        <i class="bi bi-lightbulb"></i>
+        Writing Tips
+      </h3>
+      <ul>
+        <li><i class="bi bi-check-circle-fill"></i>Write a compelling title that grabs attention</li>
+        <li><i class="bi bi-check-circle-fill"></i>Use clear, engaging language that flows naturally</li>
+        <li><i class="bi bi-check-circle-fill"></i>Add an eye-catching image to make your post stand out</li>
+        <li><i class="bi bi-check-circle-fill"></i>Break up long paragraphs for better readability</li>
+      </ul>
+    </div>
+
+    <!-- Form -->
+    <form method="POST" enctype="multipart/form-data" id="blogForm">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="post_title" class="form-label">
+          <i class="bi bi-type"></i>
+          Post Title
+        </label>
+        <input type="text" id="post_title" name="post_title" class="form-control"
+               placeholder="Enter an engaging title for your post..." required maxlength="200">
+        <div class="char-counter">
+          <span id="titleCounter">0</span>/200 characters
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="category" class="form-label">
+          <i class="bi bi-tag"></i>
+          Category
+        </label>
+        <input type="text" id="category" name="category" class="form-control"
+               placeholder="e.g., Technology, Lifestyle, Travel..." maxlength="50">
+        <div class="char-counter">
+          <span id="categoryCounter">0</span>/50 characters
+        </div>
+      </div>
+
+
+      <div class="form-group">
+  <label for="author" class="form-label">
+    <i class="bi bi-person-circle"></i>
+    Author Name
+  </label>
+  <input type="text" id="author"  name="author" class="form-control" value="{{ username }}" readonly required
+         maxlength="100">
+</div>
+
+      <div class="form-group">
+        <label for="content" class="form-label">
+          <i class="bi bi-journal-text"></i>
+          Post Content
+        </label>
+        <textarea id="content" name="content" class="form-control"
+                  placeholder="Write your amazing blog post here... Share your thoughts, experiences, and insights with your readers."
+                  required minlength="50"></textarea>
+        <div class="char-counter">
+          <span id="contentCounter">0</span> characters (minimum 50)
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="image" class="form-label">
+          <i class="bi bi-image"></i>
+          Featured Image
+        </label>
+        <div class="file-upload-wrapper">
+          <input type="file" id="image" name="image" class="file-upload-input" accept="image/*">
+          <label for="image" class="file-upload-label">
+            <i class="bi bi-cloud-upload"></i>
+            <div>
+              <div class="file-upload-text">Click to upload an image</div>
+              <div class="file-upload-note">PNG, JPG, GIF up to 10MB</div>
+            </div>
+          </label>
+        </div>
+        <div class="image-preview" id="imagePreview" style="display: none;">
+          <img id="previewImg" class="preview-image" alt="Preview">
+        </div>
+      </div>
+
+      <div class="button-group">
+        <a href="{% url 'blogHome' %}" class="btn-back">
+          <i class="bi bi-arrow-left"></i>
+          Back to Blog
+        </a>
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <i class="bi bi-send-fill"></i>
+          Publish Post
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Character counters
+  const titleInput = document.getElementById('post_title');
+  const contentInput = document.getElementById('content');
+  const titleCounter = document.getElementById('titleCounter');
+  const contentCounter = document.getElementById('contentCounter');
+  const categoryInput = document.getElementById('category');
+  const categoryCounter = document.getElementById('categoryCounter');
+  const authorInput = document.getElementById('author');
+
+  titleInput.addEventListener('input', function() {
+    titleCounter.textContent = this.value.length;
+  });
+
+  categoryInput.addEventListener('input', function() {
+    categoryCounter.textContent = this.value.length;
+  });
+
+  contentInput.addEventListener('input', function() {
+    contentCounter.textContent = this.value.length;
+  });
+
+  // Image preview
+  const imageInput = document.getElementById('image');
+  const imagePreview = document.getElementById('imagePreview');
+  const previewImg = document.getElementById('previewImg');
+  const uploadLabel = document.querySelector('.file-upload-label');
+
+  imageInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        previewImg.src = e.target.result;
+        imagePreview.style.display = 'block';
+        uploadLabel.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Enhanced form validation
+  const form = document.getElementById('blogForm');
+  const submitBtn = document.getElementById('submitBtn');
+
+  // Validation functions
+  function validateField(input, fieldName, minLength = 1) {
+    const value = input.value.trim();
+
+    if (!value) {
+      return { valid: false, message: `${fieldName} is required` };
+    }
+
+    if (value.length < minLength) {
+      return { valid: false, message: `${fieldName} must be at least ${minLength} characters long` };
+    }
+
+    return { valid: true, message: `${fieldName} looks good!` };
+  }
+
+  function updateFieldStatus(input, validation) {
+    let feedbackEl = input.parentElement.querySelector('.field-feedback');
+
+    // Create feedback element if it doesn't exist
+    if (!feedbackEl) {
+      feedbackEl = document.createElement('div');
+      feedbackEl.className = 'field-feedback';
+      feedbackEl.style.cssText = `
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+      `;
+      input.parentElement.appendChild(feedbackEl);
+    }
+
+    if (validation.valid) {
+      input.style.borderColor = '#43e97b';
+      input.style.background = 'rgba(67, 233, 123, 0.05)';
+      feedbackEl.style.color = '#43e97b';
+      feedbackEl.innerHTML = `<i class="bi bi-check-circle-fill"></i> ${validation.message}`;
+    } else {
+      input.style.borderColor = '#f5576c';
+      input.style.background = 'rgba(245, 87, 108, 0.05)';
+      feedbackEl.style.color = '#f5576c';
+      feedbackEl.innerHTML = `<i class="bi bi-exclamation-circle-fill"></i> ${validation.message}`;
+    }
+  }
+
+  // Real-time validation
+  [titleInput, authorInput, contentInput].forEach(input => {
+    input.addEventListener('blur', function() {
+      let fieldName = 'Field';
+      let minLength = 1;
+
+      if (this === titleInput) {
+        fieldName = 'Post Title';
+        minLength = 5;
+      } else if (this === authorInput) {
+        fieldName = 'Author Name';
+        minLength = 2;
+      } else if (this === contentInput) {
+        fieldName = 'Post Content';
+        minLength = 50;
+      }
+
+      const validation = validateField(this, fieldName, minLength);
+      updateFieldStatus(this, validation);
+    });
+
+    input.addEventListener('input', function() {
+      // Clear previous styling on input
+      this.style.borderColor = '';
+      this.style.background = '';
+      const feedbackEl = this.parentElement.querySelector('.field-feedback');
+      if (feedbackEl) {
+        feedbackEl.innerHTML = '';
+      }
+    });
+  });
+
+  // Form submission with comprehensive validation
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Validate all required fields
+    const titleValidation = validateField(titleInput, 'Post Title', 2);
+    const authorValidation = validateField(authorInput, 'Author Name', 2);
+    const contentValidation = validateField(contentInput, 'Post Content', 50);
+
+    // Update field statuses
+    updateFieldStatus(titleInput, titleValidation);
+    updateFieldStatus(authorInput, authorValidation);
+    updateFieldStatus(contentInput, contentValidation);
+
+    // Check if all validations pass
+    const allValid = titleValidation.valid && authorValidation.valid && contentValidation.valid;
+
+    if (!allValid) {
+      // Find first invalid field and scroll to it
+      const firstInvalid = form.querySelector('input[style*="border-color: rgb(245, 87, 108)"], textarea[style*="border-color: rgb(245, 87, 108)"]');
+      if (firstInvalid) {
+        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        firstInvalid.focus();
+
+        // Add shake animation
+        firstInvalid.style.animation = 'shake 0.5s ease-in-out';
+        setTimeout(() => {
+          firstInvalid.style.animation = '';
+        }, 500);
+      }
+
+      // Show error notification
+      showNotification('Please fill in all required fields correctly.', 'error');
+      return;
+    }
+
+    // Show loading state
+    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Publishing...';
+    submitBtn.disabled = true;
+
+    // Clear draft from localStorage since we're submitting
+    localStorage.removeItem('blogDraft');
+
+    // Submit the form (this will now proceed to actual form submission)
+    this.submit();
+  });
+
+  // Notification function
+  function showNotification(message, type) {
+    const existingNotification = document.getElementById('notification');
+    if (existingNotification) {
+      existingNotification.remove();
+    }
+
+    const notification = document.createElement('div');
+    notification.id = 'notification';
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      border-radius: 0.75rem;
+      color: white;
+      font-weight: 600;
+      max-width: 350px;
+      z-index: 9999;
+      animation: slideInRight 0.3s ease-out;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    `;
+
+    if (type === 'success') {
+      notification.style.background = 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)';
+      notification.innerHTML = `<i class="bi bi-check-circle-fill me-2"></i>${message}`;
+    } else {
+      notification.style.background = 'linear-gradient(135deg, #f5576c 0%, #f093fb 100%)';
+      notification.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-2"></i>${message}`;
+    }
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      if (notification && notification.parentNode) {
+        notification.style.animation = 'slideOutRight 0.3s ease-out';
+        setTimeout(() => {
+          if (notification && notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      }
+    }, 5000);
+  }
+
+  // Add scroll-triggered animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, observerOptions);
+
+  // Observe all animated elements
+  document.querySelectorAll('.fade-in-up').forEach(element => {
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(30px)';
+    element.style.transition = 'all 0.8s ease-out';
+    observer.observe(element);
+  });
+
+  // Auto-save draft functionality
+  let autoSaveTimer;
+  const inputs = [titleInput, contentInput, authorInput];
+
+  inputs.forEach(input => {
+    input.addEventListener('input', function() {
+      clearTimeout(autoSaveTimer);
+      autoSaveTimer = setTimeout(() => {
+        // Only save draft if there's actual content
+        if (titleInput.value.trim() || contentInput.value.trim() || authorInput.value.trim()) {
+          const draft = {
+            title: titleInput.value,
+            category: categoryInput.value,
+            author: authorInput.value,
+            content: contentInput.value,
+            timestamp: new Date().toISOString()
+          };
+          localStorage.setItem('blogDraft', JSON.stringify(draft));
+        }
+      }, 2000);
+    });
+  });
+
+  // Load draft on page load
+  window.addEventListener('load', function() {
+    const savedDraft = localStorage.getItem('blogDraft');
+    if (savedDraft) {
+      const draft = JSON.parse(savedDraft);
+      const shouldLoad = confirm('Found a saved draft. Would you like to load it?');
+      if (shouldLoad) {
+        titleInput.value = draft.title || '';
+        categoryInput.value = draft.category || '';
+        authorInput.value = draft.author || '';
+        contentInput.value = draft.content || '';
+
+        // Update counters
+        titleCounter.textContent = titleInput.value.length;
+        categoryCounter.textContent = categoryInput.value.length;
+        contentCounter.textContent = contentInput.value.length;
+      }
+    }
+  });
+
+  // Add shake animation and notification animations
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOutRight {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+{% endblock %}

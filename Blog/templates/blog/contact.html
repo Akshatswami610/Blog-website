@@ -1,0 +1,849 @@
+{% extends 'blog/basic.html' %}
+{% block title %}Contact Us - My Awesome Blog{% endblock %}
+
+{% block css %}
+<style>
+/* Contact Page Specific Styles */
+.contact-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 3rem;
+}
+
+.contact-hero {
+  text-align: center;
+  padding: 4rem 0;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-radius: 2rem;
+  margin-bottom: 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.05) 0%, transparent 70%);
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+.contact-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.contact-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  font-family: 'Playfair Display', serif;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.contact-subtitle {
+  font-size: 1.25rem;
+  color: var(--bs-body-color);
+  opacity: 0.8;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.contact-content {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4rem;
+}
+
+.contact-form-section {
+  max-width: 600px;
+  width: 100%;
+  background: var(--bs-card-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 2rem;
+  padding: 3rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--bs-shadow-lg);
+  transition: all 0.3s ease;
+}
+
+.contact-form-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: var(--primary-gradient);
+  border-radius: 2rem 2rem 0 0;
+}
+
+/* Dark mode card improvements */
+[data-bs-theme="dark"] .contact-form-section {
+  background: rgba(26, 26, 26, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+[data-bs-theme="dark"] .social-section {
+  background: rgba(26, 26, 26, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.form-title {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 1.5rem;
+  color: var(--bs-body-color);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(--bs-body-color);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.label-icon {
+  width: 32px;
+  height: 32px;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #667eea;
+  transition: all 0.3s ease;
+}
+
+.form-control {
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  border: 2px solid var(--bs-border-color);
+  border-radius: 1rem;
+  font-size: 1rem;
+  background: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+/* Enhanced form control styling for better visibility */
+[data-bs-theme="light"] .form-control {
+  background: #ffffff;
+  color: #212529;
+  border-color: #dee2e6;
+}
+
+[data-bs-theme="dark"] .form-control {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e9ecef;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-bs-theme="dark"] .form-control:focus {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+  transform: translateY(-2px);
+}
+
+.form-control:focus + .form-label .label-icon {
+  background: rgba(102, 126, 234, 0.2);
+  transform: scale(1.1);
+}
+
+/* Improved placeholder styling */
+.form-control::placeholder {
+  color: #94a3b8;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+[data-bs-theme="dark"] .form-control::placeholder {
+  color: #94a3b8;
+  opacity: 0.6;
+}
+
+.form-control:focus::placeholder {
+  opacity: 0.5;
+}
+
+/* Enhanced validation states */
+.form-control.is-valid {
+  border-color: #43e97b;
+  background: rgba(67, 233, 123, 0.05);
+}
+
+[data-bs-theme="dark"] .form-control.is-valid {
+  background: rgba(67, 233, 123, 0.1);
+  color: #ffffff;
+}
+
+.form-control.is-invalid {
+  border-color: #f5576c;
+  background: rgba(245, 87, 108, 0.05);
+}
+
+[data-bs-theme="dark"] .form-control.is-invalid {
+  background: rgba(245, 87, 108, 0.1);
+  color: #ffffff;
+}
+
+.form-feedback {
+  font-size: 0.875rem;
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  min-height: 1.25rem;
+}
+
+.form-feedback.valid {
+  color: #43e97b;
+}
+
+.form-feedback.invalid {
+  color: #f5576c;
+}
+
+.btn-submit {
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  padding: 1.25rem 2rem;
+  border-radius: 1rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  width: 100%;
+  transition: all 0.3s ease;
+  box-shadow: var(--bs-shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: var(--bs-shadow-xl);
+  color: white;
+}
+
+.btn-submit:active:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.social-section {
+  background: var(--bs-card-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 2rem;
+  padding: 3rem;
+  text-align: center;
+  margin-bottom: 4rem;
+  box-shadow: var(--bs-shadow-lg);
+  transition: all 0.3s ease;
+}
+
+.social-title {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 1.5rem;
+  color: var(--bs-body-color);
+}
+
+.social-subtitle {
+  color: var(--bs-body-color);
+  opacity: 0.8;
+  margin-bottom: 2rem;
+  font-size: 1.125rem;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.social-link {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(102, 126, 234, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #667eea;
+  text-decoration: none;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.social-link:hover {
+  background: var(--primary-gradient);
+  color: white;
+  transform: translateY(-5px);
+  border-color: rgba(102, 126, 234, 0.3);
+  box-shadow: var(--bs-shadow-lg);
+}
+
+/* Enhanced dark mode social links */
+[data-bs-theme="dark"] .social-link {
+  background: rgba(102, 126, 234, 0.15);
+  color: #8b9aff;
+}
+
+[data-bs-theme="dark"] .social-link:hover {
+  background: var(--primary-gradient);
+  color: white;
+}
+
+/* Input Focus Animation */
+.form-group {
+  transition: all 0.3s ease;
+}
+
+.form-group:focus-within {
+  transform: translateY(-2px);
+}
+
+.form-group:focus-within .label-icon {
+  background: var(--primary-gradient);
+  color: white;
+  transform: scale(1.1);
+}
+
+/* Loading Animation */
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Enhanced card hover effects */
+.contact-form-section:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--bs-shadow-xl);
+}
+
+.social-section:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--bs-shadow-xl);
+}
+
+/* Improved textarea styling */
+textarea.form-control {
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+[data-bs-theme="dark"] textarea.form-control {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e9ecef;
+}
+
+[data-bs-theme="dark"] textarea.form-control:focus {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+/* Notification Animations */
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
+
+/* Enhanced notification styling */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  max-width: 400px;
+  z-index: 9999;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.notification.success {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  color: white;
+}
+
+.notification.error {
+  background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .contact-container {
+    padding: 0 2rem;
+  }
+
+  .contact-hero {
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+  }
+
+  .contact-title {
+    font-size: 2rem;
+  }
+
+  .contact-form-section,
+  .social-section {
+    padding: 2rem;
+  }
+
+  .social-links {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .contact-container {
+    padding: 0 1.5rem;
+  }
+
+  .contact-title {
+    font-size: 1.75rem;
+  }
+
+  .form-title,
+  .social-title {
+    font-size: 1.5rem;
+  }
+
+  .contact-form-section {
+    padding: 1.5rem;
+  }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="contact-container">
+  <!-- Hero Section -->
+  <section class="contact-hero">
+    <div class="contact-hero-content">
+      <h1 class="contact-title">Get In Touch</h1>
+      <p class="contact-subtitle">
+        Have a question, suggestion, or just want to say hello? We'd love to hear from you. Reach out to us anytime!
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="contact-content">
+    <!-- Contact Form -->
+    <div class="contact-form-section">
+      <h2 class="form-title">Send us a Message</h2>
+      <form method="POST" id="contactForm" novalidate>
+        {% csrf_token %}
+
+        <!-- Name Field -->
+        <div class="form-group">
+  <label for="name" class="form-label">
+    <div class="label-icon">
+      <i class="bi bi-person"></i>
+    </div>
+    Full Name
+  </label>
+  <input type="text" id="name" name="name" class="form-control"
+         value="{% if user.is_authenticated %}{{ full_name }}{% endif %}"
+         {% if user.is_authenticated %}readonly{% endif %}
+         placeholder="Enter your full name" required>
+  <div class="form-feedback" id="nameFeedback"></div>
+</div>
+
+        <!-- Email Field -->
+        <div class="form-group">
+          <label for="email" class="form-label">
+            <div class="label-icon">
+              <i class="bi bi-envelope"></i>
+            </div>
+            Email Address
+          </label>
+          <input type="email" id="email" name="email" class="form-control"
+                 value="{% if user.is_authenticated %}{{ email }}{% endif %}"
+                 {% if user.is_authenticated %}readonly{% endif %}
+                 placeholder="Enter your email address" required>
+          <div class="form-feedback" id="emailFeedback"></div>
+        </div>
+
+        <!-- Subject Field -->
+        <div class="form-group">
+          <label for="subject" class="form-label">
+            <div class="label-icon">
+              <i class="bi bi-chat-text"></i>
+            </div>
+            Subject
+          </label>
+          <input type="text" id="subject" name="subject" class="form-control"
+                 placeholder="What's this about?" required>
+          <div class="form-feedback" id="subjectFeedback"></div>
+        </div>
+
+        <!-- Message Field -->
+        <div class="form-group">
+          <label for="message" class="form-label">
+            <div class="label-icon">
+              <i class="bi bi-chat-dots"></i>
+            </div>
+            Message
+          </label>
+          <textarea id="message" name="message" class="form-control" rows="6"
+                    placeholder="Tell us more about your inquiry..." required></textarea>
+          <div class="form-feedback" id="messageFeedback"></div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <i class="bi bi-send"></i>
+          Send Message
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Social Media Section -->
+  <section class="social-section">
+    <h2 class="social-title">Follow Us</h2>
+    <p class="social-subtitle">
+      Stay connected with us on social media for the latest updates, tips, and behind-the-scenes content.
+    </p>
+    <div class="social-links">
+      <a href="#" class="social-link" title="Twitter">
+        <i class="bi bi-twitter"></i>
+      </a>
+      <a href="#" class="social-link" title="Facebook">
+        <i class="bi bi-facebook"></i>
+      </a>
+      <a href="#" class="social-link" title="Instagram">
+        <i class="bi bi-instagram"></i>
+      </a>
+      <a href="#" class="social-link" title="LinkedIn">
+        <i class="bi bi-linkedin"></i>
+      </a>
+      <a href="#" class="social-link" title="GitHub">
+        <i class="bi bi-github"></i>
+      </a>
+      <a href="#" class="social-link" title="YouTube">
+        <i class="bi bi-youtube"></i>
+      </a>
+    </div>
+  </section>
+</div>
+
+<script>
+// Form validation and enhancement
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('contactForm');
+  const nameInput = document.getElementById('name');
+  const emailInput = document.getElementById('email');
+  const subjectInput = document.getElementById('subject');
+  const messageInput = document.getElementById('message');
+  const submitBtn = document.getElementById('submitBtn');
+
+  // Enhanced notification function
+  function showNotification(message, type = 'success') {
+    // Remove existing notifications
+    const existingNotifications = document.querySelectorAll('.notification');
+    existingNotifications.forEach(notification => notification.remove());
+
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.style.animation = 'slideInRight 0.3s ease-out';
+
+    const icon = type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill';
+    notification.innerHTML = `<i class="bi ${icon}"></i>${message}`;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      if (notification && notification.parentNode) {
+        notification.style.animation = 'slideOutRight 0.3s ease-out';
+        setTimeout(() => {
+          if (notification && notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      }
+    }, 5000);
+  }
+
+  // Success and error message functions
+  function showSuccessMessage(message) {
+    showNotification(message, 'success');
+  }
+
+  function showErrorMessage(message) {
+    showNotification(message, 'error');
+  }
+
+  // Check if form was successfully submitted (from Django context)
+  {% if success %}
+  showSuccessMessage('Thank you for your message! We have received your inquiry and will get back to you soon.');
+  {% endif %}
+
+  {% if error %}
+  showErrorMessage('{{ error|escapejs }}');
+  {% endif %}
+
+  // Validation functions
+  function validateName(name) {
+    if (name.length < 2) {
+      return { valid: false, message: 'Name must be at least 2 characters long' };
+    }
+    return { valid: true, message: 'Perfect name!' };
+  }
+
+  function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return { valid: false, message: 'Please enter a valid email address' };
+    }
+    return { valid: true, message: 'Email looks great!' };
+  }
+
+  function validateSubject(subject) {
+    if (subject.length < 5) {
+      return { valid: false, message: 'Subject must be at least 5 characters long' };
+    }
+    return { valid: true, message: 'Great subject!' };
+  }
+
+  function validateMessage(message) {
+    if (message.length < 10) {
+      return { valid: false, message: 'Message must be at least 10 characters long' };
+    }
+    return { valid: true, message: 'Thank you for your detailed message!' };
+  }
+
+  function updateFieldValidation(input, feedbackId, validation) {
+    if (!input) return;
+
+    const feedbackEl = document.getElementById(feedbackId);
+    if (!feedbackEl) return;
+
+    if (validation.valid) {
+      input.classList.remove('is-invalid');
+      input.classList.add('is-valid');
+      feedbackEl.className = 'form-feedback valid';
+      feedbackEl.innerHTML = `<i class="bi bi-check-circle-fill"></i> ${validation.message}`;
+    } else {
+      input.classList.remove('is-valid');
+      input.classList.add('is-invalid');
+      feedbackEl.className = 'form-feedback invalid';
+      feedbackEl.innerHTML = `<i class="bi bi-exclamation-circle-fill"></i> ${validation.message}`;
+    }
+  }
+
+  // Real-time validation
+  if (nameInput) {
+    nameInput.addEventListener('input', function() {
+      if (this.value.trim() === '') {
+        this.classList.remove('is-valid', 'is-invalid');
+        const feedback = document.getElementById('nameFeedback');
+        if (feedback) feedback.innerHTML = '';
+        return;
+      }
+      const validation = validateName(this.value.trim());
+      updateFieldValidation(this, 'nameFeedback', validation);
+    });
+  }
+
+  if (emailInput) {
+    emailInput.addEventListener('input', function() {
+      if (this.value.trim() === '') {
+        this.classList.remove('is-valid', 'is-invalid');
+        const feedback = document.getElementById('emailFeedback');
+        if (feedback) feedback.innerHTML = '';
+        return;
+      }
+      const validation = validateEmail(this.value.trim());
+      updateFieldValidation(this, 'emailFeedback', validation);
+    });
+  }
+
+  if (subjectInput) {
+    subjectInput.addEventListener('input', function() {
+      if (this.value.trim() === '') {
+        this.classList.remove('is-valid', 'is-invalid');
+        const feedback = document.getElementById('subjectFeedback');
+        if (feedback) feedback.innerHTML = '';
+        return;
+      }
+      const validation = validateSubject(this.value.trim());
+      updateFieldValidation(this, 'subjectFeedback', validation);
+    });
+  }
+
+  if (messageInput) {
+    messageInput.addEventListener('input', function() {
+      if (this.value.trim() === '') {
+        this.classList.remove('is-valid', 'is-invalid');
+        const feedback = document.getElementById('messageFeedback');
+        if (feedback) feedback.innerHTML = '';
+        return;
+      }
+      const validation = validateMessage(this.value.trim());
+      updateFieldValidation(this, 'messageFeedback', validation);
+    });
+  }
+
+  // Form submission with improved error handling
+  if (form && submitBtn) {
+    form.addEventListener('submit', function(e) {
+      // Prevent multiple submissions
+      if (submitBtn.disabled) {
+        e.preventDefault();
+        return;
+      }
+
+      e.preventDefault();
+
+      // Get form values
+      const name = nameInput ? nameInput.value.trim() : '';
+      const email = emailInput ? emailInput.value.trim() : '';
+      const subject = subjectInput ? subjectInput.value.trim() : '';
+      const message = messageInput ? messageInput.value.trim() : '';
+
+      // Check if all fields are filled
+      if (!name || !email || !subject || !message) {
+        // Highlight empty fields
+        if (!name && nameInput) {
+          nameInput.classList.add('is-invalid');
+          const feedback = document.getElementById('nameFeedback');
+          if (feedback) {
+            feedback.className = 'form-feedback invalid';
+            feedback.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> Name is required';
+          }
+        }
+        if (!email && emailInput) {
+          emailInput.classList.add('is-invalid');
+          const feedback = document.getElementById('emailFeedback');
+          if (feedback) {
+            feedback.className = 'form-feedback invalid';
+            feedback.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> Email is required';
+          }
+        }
+        if (!subject && subjectInput) {
+          subjectInput.classList.add('is-invalid');
+          const feedback = document.getElementById('subjectFeedback');
+          if (feedback) {
+            feedback.className = 'form-feedback invalid';
+            feedback.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> Subject is required';
+          }
+        }
+        if (!message && messageInput) {
+          messageInput.classList.add('is-invalid');
+          const feedback = document.getElementById('messageFeedback');
+          if (feedback) {
+            feedback.className = 'form-feedback invalid';
+            feedback.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> Message is required';
+          }
+        }
+        return;
+      }
+
+      // Validate all fields
+      const nameValidation = validateName(name);
+      const emailValidation = validateEmail(email);
+      const subjectValidation = validateSubject(subject);
+      const messageValidation = validateMessage(message);
+
+      updateFieldValidation(nameInput, 'nameFeedback', nameValidation);
+      updateFieldValidation(emailInput, 'emailFeedback', emailValidation);
+      updateFieldValidation(subjectInput, 'subjectFeedback', subjectValidation);
+      updateFieldValidation(messageInput, 'messageFeedback', messageValidation);
+
+      // Check if all validations pass
+      if (nameValidation.valid && emailValidation.valid && subjectValidation.valid && messageValidation.valid) {
+        // Disable button immediately to prevent double submission
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<div class="loading-spinner"></div> Sending Message...';
+
+        // Submit the form to Django after a short delay
+        setTimeout(() => {
+          // Use the original form submission method
+          form.submit();
+        }, 100);
+      } else {
+        // Scroll to first invalid field
+        const firstInvalid = form.querySelector('.is-invalid');
+        if (firstInvalid) {
+          firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          firstInvalid.focus();
+        }
+      }
+    });
+  }
+});
+</script>
+{% endblock %}
