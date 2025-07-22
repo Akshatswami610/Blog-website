@@ -103,6 +103,7 @@ else:  # Production (Render + AWS S3)
     AWS_STORAGE_BUCKET_NAME = 'django-blog-website-610'  # Explicit bucket name
     AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME', default='us-east-1')
     AWS_QUERYSTRING_AUTH = False  # Make files publicly accessible
+    AWS_DEFAULT_ACL = 'public-read'
 
     # Use S3 for storage
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
