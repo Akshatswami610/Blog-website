@@ -8,8 +8,10 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
+# Debug mode (set to False in production)
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
@@ -20,6 +22,7 @@ ALLOWED_HOSTS = [
 
 LOGIN_URL = '/blog/login'
 
+# Installed apps
 INSTALLED_APPS = [
     'Blog.apps.BlogConfig',
     'django.contrib.admin',
@@ -31,6 +34,7 @@ INSTALLED_APPS = [
     'storages',  # For AWS S3
 ]
 
+# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -43,6 +47,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'Blog.urls'
 
+# Templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -60,6 +65,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Blog.wsgi.application'
 
+# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -67,6 +73,7 @@ DATABASES = {
     }
 }
 
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
@@ -74,27 +81,35 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
 ]
 
+# Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
+# ------------------------
+# Static & Media Settings
+# ------------------------
+
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Media files
 if DEBUG:  # Local development
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
-else:  # Production (Render + S3)
+else:  # Production (Render + AWS S3)
     AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
-    AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME', default='django-blog-website-610')
+    AWS_STORAGE_BUCKET_NAME = 'django-blog-website-610'  # Explicit bucket name
     AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME', default='us-east-1')
-    AWS_QUERYSTRING_AUTH = False  # Makes files publicly accessible
+    AWS_QUERYSTRING_AUTH = False  # Make files publicly accessible
 
+    # Use S3 for storage
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/media/'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+    # Static and media URLs from S3
+    STATIC_URL = 'https://django-blog-website-610.s3.amazonaws.com/static/'
+    MEDIA_URL = 'https://django-blog-website-610.s3.amazonaws.com/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
