@@ -15,7 +15,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
-    'blog-website-q9en.onrender.com',
+    'blog-website-3wu2.onrender.com',
     'localhost',
     '127.0.0.1'
 ]
