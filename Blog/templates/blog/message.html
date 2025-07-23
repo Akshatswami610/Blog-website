@@ -5,9 +5,9 @@
 <style>
   /* Success Page Specific Styles */
   .success-container {
-    max-width: 600px;
+    max-width: 800px;
     margin: 4rem auto;
-    padding: 0 1rem;
+    padding: 0 2rem;
     min-height: calc(100vh - 300px);
     display: flex;
     align-items: center;
@@ -17,13 +17,20 @@
   .success-card {
     background: var(--bs-card-bg);
     border: 1px solid var(--bs-border-color);
-    border-radius: 1.5rem;
-    padding: 3rem 2rem;
-    box-shadow: var(--bs-shadow-lg);
+    border-radius: 2rem;
+    padding: 4rem 3rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
     text-align: center;
     position: relative;
     overflow: hidden;
     width: 100%;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+
+  .success-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.2);
   }
 
   .success-card::before {
@@ -32,8 +39,9 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
+    height: 6px;
     background: var(--success-gradient);
+    border-radius: 2rem 2rem 0 0;
   }
 
   /* Success Icon */
@@ -136,10 +144,12 @@
   @media (max-width: 768px) {
     .success-container {
       margin: 2rem auto;
+      padding: 0 3rem; /* Increased from 2rem to 3rem */
     }
 
     .success-card {
-      padding: 2rem 1.5rem;
+      padding: 3rem 3.5rem; /* Increased horizontal padding from 2.5rem to 3.5rem */
+      border-radius: 1.5rem;
     }
 
     .success-title {
@@ -153,13 +163,17 @@
 
     .btn-action {
       width: 100%;
-      max-width: 280px;
+      max-width: 320px;
     }
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 576px) {
+    .success-container {
+      padding: 0 2.5rem; /* Increased from 1.5rem to 2.5rem */
+    }
+
     .success-card {
-      padding: 2rem 1rem;
+      padding: 2.5rem 3rem; /* Increased horizontal padding from 2rem to 3rem */
     }
 
     .success-title {
@@ -171,6 +185,21 @@
       height: 70px;
       font-size: 2rem;
     }
+  }
+
+  /* Dark Mode Improvements */
+  [data-theme="dark"] .success-card {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+  }
+
+  [data-theme="dark"] .success-title {
+    color: #f1f5f9;
+  }
+
+  [data-theme="dark"] .success-message {
+    color: #e2e8f0;
   }
 </style>
 {% endblock %}

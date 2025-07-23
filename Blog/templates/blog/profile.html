@@ -1,181 +1,730 @@
 {% extends 'blog/basic.html' %}
-{% block title %}Profile{% endblock %}
+{% block title %}My Profile - My Awesome Blog{% endblock %}
 
 {% block css %}
 <style>
-    .profile-container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-    }
+/* Profile Page Specific Styles */
+.profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
 
-    .profile-info {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 30px;
-    }
+.profile-hero {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-radius: 2rem;
+  padding: 3rem 2rem;
+  margin-bottom: 3rem;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
 
-    /* ---------- NEW CSS ---------- */
-    .btn-primary {
-        background-color: #007bff;
-        color: white;
-    }
-    .btn-primary:hover {
-        background-color: #0069d9;
-    }
-    /* ----------------------------- */
+.profile-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.05) 0%, transparent 70%);
+  animation: float 6s ease-in-out infinite;
+}
 
-    .profile-field {
-        margin-bottom: 15px;
-        padding: 10px;
-        border-bottom: 1px solid #dee2e6;
-    }
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
 
-    .profile-field:last-child { border-bottom: none; }
+.profile-hero-content {
+  position: relative;
+  z-index: 2;
+}
 
-    .field-label { font-weight: bold; color: #495057; margin-bottom: 5px; }
+.profile-avatar-large {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 0 auto 2rem;
+  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
 
-    .field-value { color: #212529; }
+.profile-avatar-large::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #667eea, #764ba2, #667eea);
+  border-radius: 50%;
+  z-index: -1;
+  animation: gradientRotate 3s linear infinite;
+}
 
-    .danger-zone {
-        background: #fff5f5;
-        border: 1px solid #fed7d7;
-        border-radius: 8px;
-        padding: 20px;
-        margin-top: 30px;
-    }
+@keyframes gradientRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
-    .danger-zone h3 { color: #e53e3e; margin-bottom: 15px; }
+.profile-name {
+  font-size: 2.5rem;
+  font-weight: 800;
+  font-family: 'Playfair Display', serif;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
 
-    .btn {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
-        margin-right: 10px;
-        transition: background-color 0.3s;
-    }
+.profile-username {
+  color: var(--bs-muted-color);
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
 
-    .btn-danger { background-color: #dc3545; color: white; }
-    .btn-danger:hover { background-color: #c82333; }
+.profile-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
 
-    .btn-secondary { background-color: #6c757d; color: white; }
-    .btn-secondary:hover { background-color: #5a6268; }
+.profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
 
-    /* Modal styles */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-    }
+.profile-card {
+  background: var(--bs-card-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: var(--bs-shadow-md);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
 
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 20px;
-        border-radius: 8px;
-        width: 90%;
-        max-width: 500px;
-        position: relative;
-    }
+.profile-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-gradient);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
 
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-    }
+.profile-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--bs-shadow-xl);
+}
 
-    .close:hover,
-    .close:focus {
-        color: black;
-    }
+.profile-card:hover::before {
+  transform: scaleX(1);
+}
 
-    .loading {
-        opacity: 0.6;
-        pointer-events: none;
-    }
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  color: var(--bs-body-color);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
 
-    /* Alert styles */
-    .alert {
-        padding: 15px;
-        margin-bottom: 20px;
-        border-radius: 4px;
-        display: none;
-    }
+.card-title i {
+  color: #667eea;
+  font-size: 1.1rem;
+}
 
-    .alert-success {
-        background-color: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--bs-border-color);
+  transition: all 0.3s ease;
+}
 
-    .alert-error {
-        background-color: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-item:hover {
+  background: rgba(102, 126, 234, 0.05);
+  margin: 0 -1rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+}
+
+.info-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(102, 126, 234, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #667eea;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.info-content {
+  flex: 1;
+}
+
+.info-label {
+  font-size: 0.85rem;
+  color: var(--bs-muted-color);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.info-value {
+  color: var(--bs-body-color);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.profile-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.danger-zone {
+  background: var(--bs-card-bg);
+  border: 2px solid #f5576c;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.danger-zone::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+}
+
+.danger-zone h3 {
+  color: #f5576c;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.danger-zone h3 i {
+  font-size: 1.25rem;
+}
+
+.danger-zone p {
+  color: var(--bs-body-color);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.btn {
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  box-shadow: var(--bs-shadow-sm);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--bs-shadow-md);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+  color: white;
+}
+
+.btn-danger:hover {
+  box-shadow: 0 8px 25px rgba(245, 87, 108, 0.3);
+}
+
+.btn-secondary {
+  background: rgba(108, 117, 125, 0.1);
+  color: #6c757d;
+  border: 2px solid rgba(108, 117, 125, 0.2);
+}
+
+.btn-secondary:hover {
+  background: rgba(108, 117, 125, 0.2);
+  border-color: rgba(108, 117, 125, 0.4);
+}
+
+.btn-primary {
+  background: var(--primary-gradient);
+  color: white;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: var(--bs-card-bg);
+  margin: 10% auto;
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: var(--bs-shadow-xl);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-content h2 {
+  color: var(--bs-body-color);
+  font-family: 'Playfair Display', serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.modal-content h2 i {
+  color: #f5576c;
+  font-size: 1.5rem;
+}
+
+.modal-content p {
+  color: var(--bs-body-color);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: var(--bs-muted-color);
+  font-size: 2rem;
+  font-weight: bold;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.close:hover {
+  background: rgba(245, 87, 108, 0.1);
+  color: #f5576c;
+  transform: scale(1.1);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Alert styles */
+.alert {
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  display: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-success {
+  background: rgba(67, 233, 123, 0.1);
+  color: #43e97b;
+  border-left: 4px solid #43e97b;
+}
+
+.alert-error {
+  background: rgba(245, 87, 108, 0.1);
+  color: #f5576c;
+  border-left: 4px solid #f5576c;
+}
+
+.edit-profile-btn {
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: var(--bs-shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  margin-top: 1.5rem;
+}
+
+.edit-profile-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--bs-shadow-xl);
+  color: white;
+}
+
+/* Dark mode improvements */
+[data-theme="dark"] .info-value,
+[data-theme="dark"] .modal-content h2,
+[data-theme="dark"] .modal-content p,
+[data-theme="dark"] .danger-zone p {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .profile-username,
+[data-theme="dark"] .info-label {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .danger-zone {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: #f5576c;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .profile-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 0 1.5rem;
+  }
+
+  .profile-hero {
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .profile-avatar-large {
+    width: 100px;
+    height: 100px;
+    font-size: 2.5rem;
+  }
+
+  .profile-name {
+    font-size: 2rem;
+  }
+
+  .profile-card,
+  .danger-zone {
+    padding: 2rem 3rem; /* Increased horizontal padding from 2.5rem to 3rem */
+    margin: 0 1.5rem; /* Increased side margins from 1rem to 1.5rem */
+  }
+
+  .modal-content {
+    padding: 2rem;
+    margin: 20% auto;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 576px) {
+  .profile-container {
+    padding: 0 1rem;
+  }
+
+  .profile-hero {
+    padding: 2rem 1rem;
+  }
+
+  .profile-name {
+    font-size: 1.75rem;
+  }
+
+  .modal-content {
+    margin: 30% auto;
+    padding: 1.5rem;
+  }
+
+  .profile-card,
+  .danger-zone {
+    padding: 1.5rem 2.5rem; /* Increased horizontal padding from 2rem to 2.5rem */
+    margin: 0 1rem; /* Increased side margins from 0.5rem to 1rem */
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
 </style>
 {% endblock %}
 
 {% block body %}
 <div class="profile-container">
-    <div id="alertContainer"></div>
+  <div id="alertContainer"></div>
 
-    <h1>User Profile</h1>
-
-    <div class="profile-info">
-        <div class="profile-field">
-            <div class="field-label">Username:</div>
-            <div class="field-value">{{ username }}</div>
-        </div>
-
-        <div class="profile-field">
-            <div class="field-label">First Name:</div>
-            <div class="field-value">{{ first_name }}</div>
-        </div>
-
-        <div class="profile-field">
-            <div class="field-label">Last Name:</div>
-            <div class="field-value">{{ last_name }}</div>
-        </div>
-
-        <div class="profile-field">
-            <div class="field-label">Email:</div>
-            <div class="field-value">{{ email }}</div>
-        </div>
-
-        <div class="profile-field">
-            <div class="field-label">Last Login:</div>
-            <div class="field-value">{{ last_login|date:"D d M Y H:i:s" }}</div>
-        </div>
+  <!-- Profile Hero Section -->
+  <section class="profile-hero">
+    <div class="profile-hero-content">
+      <div class="profile-avatar-large">
+        {{ first_name.0|default:username.0|upper }}
+      </div>
+      <h1 class="profile-name">{{ first_name }} {{ last_name|default:"" }}</h1>
+      <p class="profile-username">@{{ username }}</p>
     </div>
+  </section>
 
-    <div class="danger-zone">
-        <h3>Delete Account</h3>
-        <p>Are you sure you want to delete your account? This action cannot be undone.</p>
-        <button type="button" class="btn btn-danger" id="deleteAccountBtn">Delete Account</button>
-    </div>
+  <!-- Profile Content -->
+  <div class="profile-content">
+    <!-- Sidebar -->
+    <aside class="profile-sidebar">
+      <!-- Personal Information -->
+      <div class="profile-card">
+        <h3 class="card-title">
+          <i class="bi bi-person-circle"></i>
+          Personal Information
+        </h3>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="bi bi-person"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Username</div>
+            <div class="info-value">{{ username }}</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="bi bi-envelope"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Email</div>
+            <div class="info-value">{{ email }}</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="bi bi-person-badge"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-label">First Name</div>
+            <div class="info-value">{{ first_name }}</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="bi bi-person-badge-fill"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Last Name</div>
+            <div class="info-value">{{ last_name }}</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="bi bi-clock"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Last Login</div>
+            <div class="info-value">{{ last_login|date:"M d, Y H:i" }}</div>
+          </div>
+        </div>
+
+        <a href="#" class="edit-profile-btn">
+          <i class="bi bi-pencil-square"></i>
+          Edit Profile
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="profile-main">
+      <!-- Account Settings -->
+      <div class="profile-card">
+        <h3 class="card-title">
+          <i class="bi bi-gear"></i>
+          Account Settings
+        </h3>
+        <p style="color: var(--bs-muted-color); margin-bottom: 1.5rem;">
+          Manage your account preferences and security settings.
+        </p>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="bi bi-shield-check"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Account Status</div>
+            <div class="info-value" style="color: #43e97b;">Active</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="bi bi-calendar-plus"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Member Since</div>
+            <div class="info-value">{{ user.date_joined|date:"F Y"|default:"Recently" }}</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="bi bi-key"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Password</div>
+            <div class="info-value">••••••••</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="danger-zone">
+        <h3>
+          <i class="bi bi-exclamation-triangle"></i>
+          Danger Zone
+        </h3>
+        <p>
+          Once you delete your account, there is no going back. Please be certain.
+          This action will permanently delete your account and all associated data.
+        </p>
+        <button type="button" class="btn btn-danger" id="deleteAccountBtn">
+          <i class="bi bi-trash"></i>
+          Delete Account
+        </button>
+      </div>
+    </main>
+  </div>
 </div>
 
+<!-- Delete Confirmation Modal -->
 <div id="deleteModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Confirm Account Deletion</h2>
-        <p>Are you absolutely sure you want to delete your account? This action cannot be undone and will permanently remove all your data.</p>
-        <div style="margin-top: 20px;">
-            <button type="button" class="btn btn-secondary" id="cancelDelete">Cancel</button>
-            <button type="button" class="btn btn-danger" id="confirmDelete">Delete Account</button>
-        </div>
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      Confirm Account Deletion
+    </h2>
+    <p>
+      Are you absolutely sure you want to delete your account? This action cannot be undone
+      and will permanently remove all your data, including posts, comments, and profile information.
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-secondary" id="cancelDelete">
+        <i class="bi bi-x-circle"></i>
+        Cancel
+      </button>
+      <button type="button" class="btn btn-danger" id="confirmDelete">
+        <i class="bi bi-trash"></i>
+        Delete Account
+      </button>
     </div>
+  </div>
 </div>
 
 <script>
@@ -190,11 +739,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show modal when delete button is clicked
     deleteBtn.addEventListener('click', function() {
         modal.style.display = 'block';
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
     });
 
     // Close modal functions
     function closeModal() {
         modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Restore scrolling
     }
 
     closeBtn.addEventListener('click', closeModal);
@@ -211,15 +762,22 @@ document.addEventListener('DOMContentLoaded', function() {
     function showAlert(message, type) {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type}`;
-        alertDiv.textContent = message;
-        alertDiv.style.display = 'block';
+        alertDiv.style.display = 'flex';
+
+        const icon = type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill';
+        alertDiv.innerHTML = `<i class="bi ${icon}"></i>${message}`;
 
         alertContainer.innerHTML = '';
         alertContainer.appendChild(alertDiv);
 
         // Auto-hide after 5 seconds
         setTimeout(() => {
-            alertDiv.style.display = 'none';
+            alertDiv.style.opacity = '0';
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 300);
         }, 5000);
     }
 
@@ -242,16 +800,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle account deletion
     confirmBtn.addEventListener('click', function() {
         // Show loading state
-        confirmBtn.textContent = 'Deleting...';
+        const originalText = confirmBtn.innerHTML;
+        confirmBtn.innerHTML = '<div class="loading-spinner"></div> Deleting...';
         confirmBtn.disabled = true;
         document.querySelector('.modal-content').classList.add('loading');
 
         // Get CSRF token
         const csrfToken = getCSRFToken();
-
-        // Debug logging
-        console.log('CSRF Token:', csrfToken);
-        console.log('Request URL:', `/delete-user/{{ username }}/`);
 
         // Make AJAX request
         fetch(`/delete-user/{{ username }}/`, {
@@ -264,25 +819,18 @@ document.addEventListener('DOMContentLoaded', function() {
             credentials: 'same-origin'
         })
         .then(response => {
-            console.log('Response status:', response.status);
-            console.log('Response headers:', response.headers);
-
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
-
             return response.json();
         })
         .then(data => {
-            console.log('Response data:', data);
-
             if (data.status === 'success') {
                 showAlert(data.message, 'success');
                 closeModal();
-
                 // Redirect after a short delay
                 setTimeout(() => {
-                    window.location.href = '/'; // Redirect to home page
+                    window.location.href = '/';
                 }, 2000);
             } else {
                 showAlert(data.message || 'An error occurred while deleting the account', 'error');
@@ -292,7 +840,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Fetch error:', error);
             let errorMessage = 'An error occurred while deleting the account';
-
             if (error.message.includes('HTTP 404')) {
                 errorMessage = 'Delete endpoint not found. Please check your URL configuration.';
             } else if (error.message.includes('HTTP 403')) {
@@ -300,13 +847,12 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (error.message.includes('HTTP 500')) {
                 errorMessage = 'Server error. Please check Django logs for details.';
             }
-
             showAlert(errorMessage, 'error');
             closeModal();
         })
         .finally(() => {
             // Reset button state
-            confirmBtn.textContent = 'Delete Account';
+            confirmBtn.innerHTML = originalText;
             confirmBtn.disabled = false;
             document.querySelector('.modal-content').classList.remove('loading');
         });
