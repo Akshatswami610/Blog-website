@@ -1,17 +1,13 @@
 """
 Django settings for Blog project.
 """
-
 from pathlib import Path
 from decouple import config
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
-
-# Debug mode (set to False in production)
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
@@ -22,7 +18,6 @@ ALLOWED_HOSTS = [
 
 LOGIN_URL = '/blog/login'
 
-# Installed apps
 INSTALLED_APPS = [
     'Blog.apps.BlogConfig',
     'django.contrib.admin',
@@ -31,12 +26,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'storages',  # For AWS S3
+    'storages',  # AWS S3
 ]
 
-# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # <--- ADD THIS
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -47,7 +42,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'Blog.urls'
 
-# Templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -65,7 +59,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Blog.wsgi.application'
 
-# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -73,7 +66,6 @@ DATABASES = {
     }
 }
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
@@ -81,7 +73,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
 ]
 
-# Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
@@ -90,10 +81,16 @@ USE_TZ = True
 # ------------------------
 # Static & Media Settings
 # ------------------------
-
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'  # For dev mode
+
+# ------------------------
+# AWS S3 for Media Files
+# ------------------------
 if not DEBUG:
     AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
@@ -105,11 +102,5 @@ if not DEBUG:
     # Media files (user uploads)
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
-
-    # Static files
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
-
-
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
