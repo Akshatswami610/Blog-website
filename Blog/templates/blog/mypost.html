@@ -637,7 +637,7 @@
   function deletePost(postId) {
     const csrftoken = getCookie('csrftoken');
 
-    fetch(`/blog/delete/${postId}/`, {
+    fetch(`/blog/delete-post/${postId}/`, {
       method: 'POST',
       headers: {
         'X-CSRFToken': csrftoken,
