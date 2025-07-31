@@ -1,6 +1,10 @@
-# Blog/storage_backends.py
 from storages.backends.s3boto3 import S3Boto3Storage
 
 class MediaStorage(S3Boto3Storage):
-    location = 'media'  # All uploaded files will go under 'media/' folder in S3
-    default_acl = 'public-read'
+    location = 'media'
+    file_overwrite = False
+
+    def get_object_parameters(self, name):
+        params = super().get_object_parameters(name)
+        params['ACL'] = 'public-read'
+        return params
