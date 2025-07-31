@@ -99,7 +99,9 @@ if not DEBUG:
     AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME', default='us-east-1')
     AWS_QUERYSTRING_AUTH = False  # Public files
     AWS_DEFAULT_ACL = None  # Required for new S3 setups
-    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.us-east-1.amazonaws.com"
+
+
 
     # Use custom storage backend for media
     DEFAULT_FILE_STORAGE = 'Blog.storage_backends.MediaStorage'
