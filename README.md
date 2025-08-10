@@ -1,6 +1,7 @@
 # 📝 Django Blog Website
 A fully-featured, production-ready **blog platform** built with **Django 5.2**, designed for speed, scalability, and simplicity.  
 Deployed seamlessly on **Render**, using **AWS S3** for media storage and **WhiteNoise** for static files.
+<img width="1905" height="970" alt="image" src="https://github.com/user-attachments/assets/f7087626-1cb2-4f6e-843c-45376adaa628" />
 
 ---
 
